@@ -44,6 +44,10 @@ uv run fbmp run
 
 1. Clone and install (see Setup above)
 2. Run `uv run fbmp login` and log into Facebook
-3. Copy the nanobot skill: `~/.nanobot/workspace/skills/fbmp/SKILL.md`
+3. Install the nanobot skill:
+   ```bash
+   mkdir -p ~/.nanobot/workspace/skills/fbmp
+   ln -s ~/code/fbmp/skill/SKILL.md ~/.nanobot/workspace/skills/fbmp/SKILL.md
+   ```
 4. Test: `uv run fbmp search "test"`
 5. Configure cron via nanobot CronTool for periodic `fbmp run`
