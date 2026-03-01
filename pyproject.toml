@@ -1,0 +1,31 @@
+[project]
+name = "fbmp"
+version = "0.1.0"
+description = "Facebook Marketplace search CLI with dedup"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "playwright>=1.58.0",
+    "sqlite-utils>=3.39",
+    "typer>=0.24.1",
+]
+
+[project.scripts]
+fbmp = "fbmp.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.4",
+    "ty>=0.0.19",
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
