@@ -81,3 +81,22 @@ def remove_search(keyword: str) -> bool:
     conn.commit()
     conn.close()
     return cur.rowcount > 0
+
+
+def clear_seen(keyword: str | None = None) -> int:
+    conn = _connect()
+    if keyword:
+        cur = conn.execute("DELETE FROM seen_listings WHERE keyword = ?", (keyword,))
+    else:
+        cur = conn.execute("DELETE FROM seen_listings")
+    conn.commit()
+    conn.close()
+    return cur.rowcount
+
+
+def clear_searches() -> int:
+    conn = _connect()
+    cur = conn.execute("DELETE FROM saved_searches")
+    conn.commit()
+    conn.close()
+    return cur.rowcount

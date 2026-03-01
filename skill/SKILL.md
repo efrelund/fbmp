@@ -31,15 +31,22 @@ uv run --project ~/code/fbmp fbmp remove "kids bike"
 uv run --project ~/code/fbmp fbmp searches
 ```
 
+### Reset / clear
+```bash
+uv run --project ~/code/fbmp fbmp clear                  # clear all seen listings (re-triggers dedup)
+uv run --project ~/code/fbmp fbmp clear "couch"           # clear seen for one keyword only
+uv run --project ~/code/fbmp fbmp clear --searches        # clear seen + remove all saved searches
+```
+
 ## Interpreting output
 
-The text output is ready to forward directly to the user. It looks like:
+The text output is ready to forward directly to the user. It includes deep links (fb://) for the Facebook app and web links as fallback:
 ```
-🔍 3 new listings for "couch"
+🔍 2 new listings for "couch"
 
-$150 - Mid Century Modern Couch
-📍 Vancouver, BC
-🔗 https://facebook.com/marketplace/item/123456
+$150 - Mid Century Couch · Fort Collins, CO
+fb://marketplace/item/123456
+facebook.com/marketplace/item/123456
 ```
 
 "No new listings" means dedup filtered everything — nothing new since last check.

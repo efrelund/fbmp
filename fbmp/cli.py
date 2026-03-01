@@ -83,6 +83,22 @@ def remove(keyword: str):
 
 
 @app.command()
+def clear(
+    keyword: str = typer.Argument("", help="Clear seen listings for a keyword (all if empty)"),
+    all_searches: bool = typer.Option(False, "--searches", help="Also remove all saved searches"),
+):
+    """Clear seen listings and optionally saved searches."""
+    count = store.clear_seen(keyword or None)
+    if keyword:
+        typer.echo(f'Cleared {count} seen listings for "{keyword}".')
+    else:
+        typer.echo(f"Cleared {count} seen listings.")
+    if all_searches:
+        removed = store.clear_searches()
+        typer.echo(f"Removed {removed} saved searches.")
+
+
+@app.command()
 def run(
     output_json: bool = typer.Option(False, "--json", help="Output as JSON"),
     headed: bool = typer.Option(False, "--headed", help="Show browser window"),
@@ -143,12 +159,8 @@ def _format_text(keyword: str, listings: list[dict]):
         title = item.get("title") or "Untitled"
         location = item.get("location") or ""
         listing_id = item.get("listing_id") or ""
-        url = item.get("url") or ""
-        typer.echo(f"{price} - {title}")
-        if location:
-            typer.echo(f"\U0001f4cd {location}")
+        loc = f" · {location}" if location else ""
+        typer.echo(f"{price} - {title}{loc}")
         if listing_id:
-            typer.echo(f"\U0001f4f1 fb://marketplace/item/{listing_id}")
-        if url:
-            typer.echo(f"\U0001f310 {url}")
-        typer.echo("")
+            typer.echo(f"fb://marketplace/item/{listing_id}")
+            typer.echo(f"facebook.com/marketplace/item/{listing_id}")
