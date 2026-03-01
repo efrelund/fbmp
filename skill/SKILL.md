@@ -15,14 +15,17 @@ Run all commands via ExecTool with: `uv run --project ~/code/fbmp fbmp <command>
 ### On-demand search
 ```bash
 uv run --project ~/code/fbmp fbmp search "mid century dresser"
+uv run --project ~/code/fbmp fbmp search "dresser" --min-price 50 --max-price 300
 ```
-Returns only NEW listings (not previously seen). Add `--all` to skip dedup. Add `--json` for JSON output.
+Returns only NEW listings (not previously seen).
+Options: `--all` (skip dedup), `--json`, `--min-price N`, `--max-price N` (dollars), `--radius N` (km).
 
 ### Run all saved searches
 ```bash
 uv run --project ~/code/fbmp fbmp run
+uv run --project ~/code/fbmp fbmp run --min-price 10
 ```
-Runs every saved search keyword and returns only new listings.
+Runs every saved search keyword and returns only new listings. Supports `--min-price` and `--max-price`.
 
 ### Manage saved searches
 ```bash

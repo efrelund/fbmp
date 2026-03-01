@@ -152,3 +152,39 @@ def _parse_card_text(lines: list[str]) -> tuple[str, str, str]:
     location = lines[idx + 1] if idx + 1 < len(lines) else ""
 
     return title, price, location
+
+
+def parse_price_cents(price_str: str) -> int | None:
+    """Extract the lowest numeric price in cents. Returns None if unparseable."""
+    if not price_str or price_str.lower() == "free":
+        return 0
+    # Find all dollar amounts, take the first (lowest in a range)
+    amounts = re.findall(r"\$[\d,]+(?:\.\d{2})?", price_str)
+    if not amounts:
+        return None
+    raw = amounts[0].replace("$", "").replace(",", "")
+    try:
+        return int(float(raw) * 100)
+    except ValueError:
+        return None
+
+
+def filter_by_price(
+    listings: list[dict], min_price: int | None = None, max_price: int | None = None
+) -> list[dict]:
+    """Filter listings by price range (in dollars)."""
+    if min_price is None and max_price is None:
+        return listings
+    result = []
+    for item in listings:
+        cents = parse_price_cents(item.get("price", ""))
+        if cents is None:
+            result.append(item)
+            continue
+        dollars = cents / 100
+        if min_price is not None and dollars < min_price:
+            continue
+        if max_price is not None and dollars > max_price:
+            continue
+        result.append(item)
+    return result

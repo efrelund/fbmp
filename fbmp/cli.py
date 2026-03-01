@@ -6,7 +6,7 @@ import typer
 
 from fbmp import config, store
 from fbmp.browser import browser_context
-from fbmp.scraper import LoginRequiredError, search_marketplace
+from fbmp.scraper import LoginRequiredError, filter_by_price, search_marketplace
 
 app = typer.Typer(help="Facebook Marketplace search CLI")
 
@@ -37,17 +37,24 @@ def search(
     headed: bool = typer.Option(False, "--headed", help="Show browser window"),
     max_results: int = typer.Option(0, "--max", help="Max results (0 = use config default)"),
     radius: int = typer.Option(0, "--radius", help="Search radius in km (0 = use config default)"),
+    min_price: int = typer.Option(0, "--min-price", help="Min price in dollars (0 = no min)"),
+    max_price: int = typer.Option(0, "--max-price", help="Max price in dollars (0 = no max)"),
 ):
     """Search Marketplace for a keyword."""
     config.ensure_dirs()
+    cfg = config.load()
     mr = max_results if max_results > 0 else None
     rk = radius if radius > 0 else None
+    mn = min_price or cfg.get("min_price")
+    mx = max_price or cfg.get("max_price")
     try:
         with browser_context(headed=headed) as ctx:
             listings = search_marketplace(ctx, keyword, max_results=mr, radius_km=rk)
     except LoginRequiredError as e:
         typer.echo(str(e), err=True)
         raise typer.Exit(1) from None
+
+    listings = filter_by_price(listings, min_price=mn, max_price=mx)
 
     if not all_listings:
         listings = store.filter_new(keyword, listings)
@@ -102,9 +109,14 @@ def clear(
 def run(
     output_json: bool = typer.Option(False, "--json", help="Output as JSON"),
     headed: bool = typer.Option(False, "--headed", help="Show browser window"),
+    min_price: int = typer.Option(0, "--min-price", help="Min price in dollars (0 = no min)"),
+    max_price: int = typer.Option(0, "--max-price", help="Max price in dollars (0 = no max)"),
 ):
     """Run all saved searches, output new listings only."""
     config.ensure_dirs()
+    cfg = config.load()
+    mn = min_price or cfg.get("min_price")
+    mx = max_price or cfg.get("max_price")
     keywords = store.list_searches()
     if not keywords:
         typer.echo("No saved searches. Use 'fbmp add <keyword>' first.")
@@ -116,6 +128,7 @@ def run(
             for kw in keywords:
                 try:
                     listings = search_marketplace(ctx, kw)
+                    listings = filter_by_price(listings, min_price=mn, max_price=mx)
                     new_listings = store.filter_new(kw, listings)
                     if new_listings:
                         all_results[kw] = new_listings
