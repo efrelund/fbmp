@@ -142,10 +142,13 @@ def _format_text(keyword: str, listings: list[dict]):
         price = item.get("price") or "N/A"
         title = item.get("title") or "Untitled"
         location = item.get("location") or ""
+        listing_id = item.get("listing_id") or ""
         url = item.get("url") or ""
         typer.echo(f"{price} - {title}")
         if location:
             typer.echo(f"\U0001f4cd {location}")
+        if listing_id:
+            typer.echo(f"\U0001f4f1 fb://marketplace/item/{listing_id}")
         if url:
-            typer.echo(f"\U0001f517 {url}")
+            typer.echo(f"\U0001f310 {url}")
         typer.echo("")
