@@ -36,13 +36,15 @@ def search(
     output_json: bool = typer.Option(False, "--json", help="Output as JSON"),
     headed: bool = typer.Option(False, "--headed", help="Show browser window"),
     max_results: int = typer.Option(0, "--max", help="Max results (0 = use config default)"),
+    radius: int = typer.Option(0, "--radius", help="Search radius in km (0 = use config default)"),
 ):
     """Search Marketplace for a keyword."""
     config.ensure_dirs()
     mr = max_results if max_results > 0 else None
+    rk = radius if radius > 0 else None
     try:
         with browser_context(headed=headed) as ctx:
-            listings = search_marketplace(ctx, keyword, max_results=mr)
+            listings = search_marketplace(ctx, keyword, max_results=mr, radius_km=rk)
     except LoginRequiredError as e:
         typer.echo(str(e), err=True)
         raise typer.Exit(1) from None

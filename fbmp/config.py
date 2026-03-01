@@ -7,7 +7,7 @@ CONFIG_PATH = FBMP_DIR / "config.json"
 DEFAULTS = {
     "profile_dir": str(FBMP_DIR / "chrome-profile"),
     "max_results": 20,
-    "location": None,
+    "radius_km": 64,  # ~40 miles
 }
 
 
