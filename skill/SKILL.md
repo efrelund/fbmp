@@ -41,6 +41,10 @@ uv run --project ~/code/fbmp fbmp clear "couch"           # clear seen for one k
 uv run --project ~/code/fbmp fbmp clear --searches        # clear seen + remove all saved searches
 ```
 
+## Price warning
+
+Listings at $0, $1, or "Free" are usually clickbait — sellers use fake low prices to appear in sorted results. Do NOT highlight these as amazing deals. Mention the listing normally but note the price is likely not real. Only flag genuinely good deals when the price seems realistic for the item.
+
 ## Interpreting output
 
 The text output is ready to forward directly to the user. It includes deep links (fb://) for the Facebook app and web links as fallback:
